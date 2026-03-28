@@ -12,8 +12,14 @@ const PORT = process.env.PORT || 5000;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 // cors: allows your React app (port 5173) to talk to this server (port 5000)
-app.use(cors({ origin: ["http://localhost:5173", "http://localhost:5174"] }));
-
+app.use(cors({ 
+  origin: [
+    "http://localhost:5173", 
+    "http://localhost:5174",
+    "https://taskflow-forntend.onrender.com"
+  ],
+  credentials: true
+}));
 // express.json: lets Express read JSON data sent from React
 app.use(express.json());
 
