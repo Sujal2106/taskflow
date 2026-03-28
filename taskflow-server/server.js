@@ -32,18 +32,36 @@ app.use("/api/tasks", taskRoutes);
 app.get("/", (req, res) => {
   res.json({ message: "TaskFlow API is running!" });
 });
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is healthy" });
 });
-// ─── Connect to MongoDB, then start server ───────────────────────────────────
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ Connected to MongoDB");
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
+
+// ─── Connect to MongoDB (Optional) ─────────────────────────────────────────────
+if (process.env.MONGO_URI) {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log("✅ Connected to MongoDB");
+    })
+    .catch((err) => {
+      console.error("❌ MongoDB connection error:", err.message);
+      console.log("⚠️  Server will run without database");
     });
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err.message);
+} else {
+  console.log("⚠️  MONGO_URI not set - running without database");
+}
+
+// ─── Start server ─────────────────────────────────────────────────────────────
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// ─── Graceful shutdown ────────────────────────────────────────────────────────
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received, shutting down gracefully");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
   });
+});
