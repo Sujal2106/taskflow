@@ -3,7 +3,7 @@
 // Instead of calling fetch() everywhere, we keep all API calls here.
 // This makes it easy to change the URL or add auth later in one place.
 
-const BASE_URL = "http://localhost:5000/api/tasks";
+const BASE_URL = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/tasks`;
 
 // Helper: handles fetch + error checking in one place
 async function request(url, options = {}) {
