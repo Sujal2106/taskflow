@@ -32,7 +32,9 @@ app.use("/api/tasks", taskRoutes);
 app.get("/", (req, res) => {
   res.json({ message: "TaskFlow API is running!" });
 });
-
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Server is healthy" });
+});
 // ─── Connect to MongoDB, then start server ───────────────────────────────────
 mongoose
   .connect(process.env.MONGO_URI)
